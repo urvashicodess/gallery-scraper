@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Art Gallery Finder 🎨</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 500px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: scale(1.05);
+        }
+        h1 {
+            color: #333;
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: left;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #ff4d6d;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        #file-name {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+            display: none;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+            width: 100%;
+        }
+        #start-crawl {
+            background-color: #ff4d6d;
+            color: white;
+            display: none;
+        }
+        #start-crawl:hover {
+            background-color: #e63e5d;
+            transform: translateY(-2px);
+        }
+        #download-csv {
+            background-color: #ff9f43;
+            color: white;
+            display: none;
+        }
+        #download-csv:hover {
+            background-color: #e68938;
+            transform: translateY(-2px);
+        }
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        .loader {
+            display: none;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #ff4d6d;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Art Gallery Finder 🎨</h1>
+        <div class="instructions">
+            <p><strong>How to Use:</strong></p>
+            <ol>
+                <li>You can either enter URLs manually in the text box or upload a CSV file containing gallery website URLs.</li>
+                <li>If uploading a CSV, the file name will be displayed once selected.</li>
+                <li>After entering URLs or uploading a file, click the <strong>Start Exploring</strong> button.</li>
+                <li>Wait for the process to complete while the loading animation runs.</li>
+                <li>Once the exploration is finished, a message will appear indicating that the download is ready.</li>
+                <li>Click <strong>Download CSV</strong> to get the extracted data.</li>
+            </ol>
+        </div>
+        <div class="input-container">
+            <textarea id="urls" placeholder="Enter gallery URLs (one per line)"></textarea><br>
+            <input type="file" id="csvFile" accept=".csv">
+            <p id="file-name"></p>
+        </div>
+        <button id="start-crawl" style="display:block;">🚀 Start Exploring</button>
+        <div class="loader"></div>
+        <button id="download-csv">📥 Download CSV</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function toggleStartButton() {
+                let urls = $("#urls").val().trim();
+                let fileSelected = $("#csvFile")[0].files.length > 0;
+                if (urls || fileSelected) {
+                    $("#start-crawl").show();
+                } else {
+                    $("#start-crawl").hide();
+                }
+            }
+
+            $("#csvFile").change(function() {
+                let file = this.files[0];
+                if (file) {
+                    $("#file-name").text("File selected: " + file.name).show();
+                } else {
+                    $("#file-name").hide();
+                }
+                toggleStartButton();
+            });
+
+            $("#urls").on("input", function() {
+                toggleStartButton();
+            });
+
+            $("#start-crawl").click(function() {
+                $("#status").text("Exploring in progress...");
+                $(".loader").show();
+                $(this).prop("disabled", true);
+
+                setTimeout(function() {
+                    $("#status").text("Download is ready!");
+                    $(".loader").hide();
+                    $("#download-csv").show();
+                    $("#start-crawl").prop("disabled", false);
+                }, 2000); // Simulating exploration process
+            });
+
+            $("#download-csv").click(function() {
+                window.location.href = "/download";
+            });
+        });
+    </script>
+</body>
+</html>

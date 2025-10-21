@@ -186,6 +186,32 @@ def download():
         return send_file(filename, as_attachment=True)
     return jsonify({"error": "File not found"}), 404
 
+from werkzeug.utils import secure_filename
+import io
 
+@app.route('/upload', methods=['POST'])
+def upload_csv():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+
+    # Read CSV file
+    try:
+        stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+        urls = [line.strip() for line in stream if line.strip()]
+    except Exception as e:
+        return jsonify({"error": f"Error reading CSV: {str(e)}"}), 500
+
+    print("✅ Uploaded URLs from CSV:", urls)
+
+    gallery_data = explore_multiple_galleries(urls)
+    if not gallery_data:
+        return jsonify({"message": "No data found. Check URLs or website structure."})
+
+    filename = save_to_csv(gallery_data)
+    return jsonify({"message": "CSV uploaded and processed successfully!", "file": filename})
 if __name__ == '__main__':
     app.run(debug=True)

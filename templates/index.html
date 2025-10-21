@@ -127,14 +127,17 @@
 
         <div class="input-container">
             <textarea id="urls" placeholder="Enter gallery URLs (one per line)"></textarea><br>
+        
             <input type="file" id="csvFile" accept=".csv">
             <p id="file-name"></p>
+        
+            <button id="upload-csv">📤 Upload CSV</button>
         </div>
-
+        
         <button id="start-crawl">🚀 Start Exploring</button>
         <div class="loader"></div>
         <button id="download-csv">📥 Download CSV</button>
-        <p id="status"></p>
+        <p id="status"></p>        
     </div>
 
     <!-- External JS handles logic -->

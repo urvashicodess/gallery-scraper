@@ -76,7 +76,6 @@
         #start-crawl {
             background-color: #ff4d6d;
             color: white;
-            display: none;
         }
         #start-crawl:hover {
             background-color: #e63e5d;
@@ -115,71 +114,30 @@
 <body>
     <div class="container">
         <h1>🎭 Art Gallery Finder 🎨</h1>
+
         <div class="instructions">
             <p><strong>How to Use:</strong></p>
             <ol>
-                <li>You can either enter URLs manually in the text box or upload a CSV file containing gallery website URLs.</li>
-                <li>If uploading a CSV, the file name will be displayed once selected.</li>
-                <li>After entering URLs or uploading a file, click the <strong>Start Exploring</strong> button.</li>
-                <li>Wait for the process to complete while the loading animation runs.</li>
-                <li>Once the exploration is finished, a message will appear indicating that the download is ready.</li>
-                <li>Click <strong>Download CSV</strong> to get the extracted data.</li>
+                <li>Enter gallery URLs manually in the box (one per line) or upload a CSV file containing gallery URLs.</li>
+                <li>Click <strong>Start Exploring</strong> to begin scraping.</li>
+                <li>Wait for the process to finish — the loader will spin while data is collected.</li>
+                <li>Once done, click <strong>Download CSV</strong> to save your gallery contact list.</li>
             </ol>
         </div>
+
         <div class="input-container">
             <textarea id="urls" placeholder="Enter gallery URLs (one per line)"></textarea><br>
             <input type="file" id="csvFile" accept=".csv">
             <p id="file-name"></p>
         </div>
-        <button id="start-crawl" style="display:block;">🚀 Start Exploring</button>
+
+        <button id="start-crawl">🚀 Start Exploring</button>
         <div class="loader"></div>
         <button id="download-csv">📥 Download CSV</button>
         <p id="status"></p>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            function toggleStartButton() {
-                let urls = $("#urls").val().trim();
-                let fileSelected = $("#csvFile")[0].files.length > 0;
-                if (urls || fileSelected) {
-                    $("#start-crawl").show();
-                } else {
-                    $("#start-crawl").hide();
-                }
-            }
-
-            $("#csvFile").change(function() {
-                let file = this.files[0];
-                if (file) {
-                    $("#file-name").text("File selected: " + file.name).show();
-                } else {
-                    $("#file-name").hide();
-                }
-                toggleStartButton();
-            });
-
-            $("#urls").on("input", function() {
-                toggleStartButton();
-            });
-
-            $("#start-crawl").click(function() {
-                $("#status").text("Exploring in progress...");
-                $(".loader").show();
-                $(this).prop("disabled", true);
-
-                setTimeout(function() {
-                    $("#status").text("Download is ready!");
-                    $(".loader").hide();
-                    $("#download-csv").show();
-                    $("#start-crawl").prop("disabled", false);
-                }, 2000); // Simulating exploration process
-            });
-
-            $("#download-csv").click(function() {
-                window.location.href = "/download";
-            });
-        });
-    </script>
+    <!-- External JS handles logic -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
